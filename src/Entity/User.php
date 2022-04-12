@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Entity;
+
+#[table(value: user)]
 class User
 {   
     private int $id;
@@ -8,6 +10,8 @@ class User
     private string $password;
     private string $email;
     private int $is_admin;
+
+    public static $table = 'user';
     
     public function __construct(int $id, string $login, string $password, string $email, int $is_admin)
     {   
@@ -16,6 +20,7 @@ class User
         $this->password = $password;
         $this->email = $email;
         $this->is_admin = $is_admin;
+        $_SESSION['is_admin'] = $this->is_admin;
     }
 
     // public function getLogin(): string
@@ -28,12 +33,12 @@ class User
     //     $this->login = $login;
     // }
 
-    public static function isAdmin(int $is_admin): bool
+    public static function isAdmin(): bool
     {        
-        if ($is_admin == 0){
-            return false;
-        } else{
+        if ($_SESSION['is_admin']){
             return true;
         }
+
+        return false;
     }
 }
