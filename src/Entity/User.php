@@ -7,11 +7,10 @@ class User
     private string $login;
     private string $password;
     private string $email;
-    private bool $is_admin;     
-
-    //@todo определить класс с помощью php8.0
-    public function __construct(int $id, string $login, string $password, string $email, bool $is_admin)
-    {
+    private int $is_admin;
+    
+    public function __construct(int $id, string $login, string $password, string $email, int $is_admin)
+    {   
         $this->id = $id;
         $this->login = $login;
         $this->password = $password;
@@ -29,9 +28,9 @@ class User
     //     $this->login = $login;
     // }
 
-    public static function isAdmin(): bool
-    {
-        if ($is_admin = 0){
+    public static function isAdmin(int $is_admin): bool
+    {        
+        if ($is_admin == 0){
             return false;
         } else{
             return true;

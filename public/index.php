@@ -30,20 +30,24 @@ require_once '../vendor/autoload.php';
         $smtp = $pdo->prepare("select * from users where login = :login");
         $smtp->execute(array('login' => $login));
         $data = $smtp->fetchAll();
-        print_r($data);
-        foreach($data as $column){
-            $id = $column['id'];
-            $login = $column['login'];
-            $password = $column['password'];
-            $email = $column['email'];
-            $is_admin = $column['is_admin'];            
-            }
-
-        $dump = new User($id, $login, $password, $email, $is_admin);
-        var_dump($dump);  
-    }
-    ?>
-
+        
+        if (count($data) >= 1){
+            foreach($data as $column){
+                $id = $column['id'];
+                $login = $column['login'];
+                $password = $column['password'];
+                $email = $column['email'];
+                $is_admin = $column['is_admin'];            
+                }
+            $dump = new User($id, $login, $password, $email, $is_admin);
+            var_dump($dump);  
+        } else {
+            echo 'Такого пользователя нет';
+        }
+        
+                
+    }   
+?>
 <!-- // $user = new User('admin', '1234', 'test@test.com');
 // $user = '123';
 // $user1 = "$user";
