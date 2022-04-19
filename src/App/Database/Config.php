@@ -3,7 +3,7 @@ namespace App\App\Database;
 
 class Config
 {
-    static $confArray;
+    public static array $confArray;
 
     public static function read($name)
     {

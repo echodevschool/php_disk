@@ -1,10 +1,11 @@
 <?php
+session_start();
+require_once '../vendor/autoload.php';
 use App\Entity\User;
 use App\App\Database\Database;
 ?>
-<!-- session_start();
+<!--
 // require_once 'db.php';
-// require_once '../vendor/autoload.php';
 
 // if ($_SERVER['REQUEST_URI'] === '/') {
 //     $action = new \App\Controller\HomeController();
@@ -42,12 +43,11 @@ if (isset($_POST['login']))
     $login = $_POST['login'];
     
     $dataBase = new Database(User::class);
-        $data = $dataBase->select('*')
-            ->query('where login = :login', $login)
-            ->get();
-        var_dump($database);   
-
-    
+    $data = $dataBase
+        ->select('*')
+        ->query('where login = :login', [':login' => $login])
+        ->get();
+        var_dump($data);
     }
 
 ?>

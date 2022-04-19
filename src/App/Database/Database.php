@@ -12,6 +12,10 @@ class Database
 
     private string $select;
 
+    private \PDOStatement|bool $smtp = false;
+
+    private string $class;
+
     public \PDO $pdo;
 
     public function __construct(string $class)
@@ -28,35 +32,51 @@ class Database
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
+        $this->class = $class;
         $this->table = $class::$table;        
         // $this->table = '';
     }
 
 
-    public function select(string $select)
+    public function select(string $select): Database
     {
         $this->select = $select;
-        return 'select' . $select;
-        
+
+        return $this;
     }
 
-    public function query(string $query)
+    public function query(string $query, $params = null)
     {           
-        $query = $this->pdo->select . 'from' . $table . $query;
-        $smtp = $this->pdo->prepare($query);
-        $smtp->execute();
+        $query = 'select '.$this->select . ' from ' . $this->table .' '. $query;
+        $this->smtp = $this->pdo->prepare($query);
+        $this->smtp->execute($params);
 
+        return $this;
     }
 
-    public function getData($param = null)
+    public function get(): array
     {
-        $this->pdo->query();
-    }
+        if ($this->smtp !== false) {
+            $data = $this->smtp->fetchAll();
+            $arrayEntity = [];
+            foreach ($data as $item) {
+                $entity = new $this->class();
+                foreach ($item as $key => $value) {
+                    $tmpKey = explode('_', $key);
+                    if (count($tmpKey) > 1) {
+                        $key = explode('_', $key);
+                        $key[1] = ucfirst($key[1]);
+                        $key = implode('', $key);
+                    }
+                    $method = 'set'.ucfirst($key);
+                    $entity->$method($value);
+                }
+                $arrayEntity[] = $entity;
+            }
 
-    /*
-     * $db = new Database(User::class);
-     * $data = $db->select('*')
-     * ->query('where id = :id', '1')
-     * ->get();
-     */
+            return $arrayEntity;
+        }
+
+        throw new \Exception('smtp is false');
+    }
 }
