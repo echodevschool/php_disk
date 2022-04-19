@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Entity;
-
-#[table(value: user)]
 class User
 {   
     private int $id;
